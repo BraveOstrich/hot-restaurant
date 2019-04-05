@@ -37,20 +37,20 @@ app.get("/", function(req, res) {
   res.sendFile(path.join(__dirname, "view.html"));
 });
 
-// app.get("/add", function(req, res) {
-//   res.sendFile(path.join(__dirname, "add.html"));
-// });
+app.get("/tables", function(req, res) {
+  res.sendFile(path.join(__dirname, "tables.html"));
+});
 
-// app.get("/all", function(req, res) {
-//   res.sendFile(path.join(__dirname, "all.html"));
-// });
+app.get("/reserve", function(req, res) {
+  res.sendFile(path.join(__dirname, "reserve.html"));
+});
 
-// Displays all characters
+// Displays all tables
 app.get("/api/tables", function(req, res) {
   return res.json(tables);
 });
 
-// Displays all characters
+// Displays the waitlist
 app.get("/api/waitlist", function(req, res) {
   return res.json(tables);
 });
