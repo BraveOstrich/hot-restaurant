@@ -12,29 +12,33 @@ var PORT = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Star Wars Characters (DATA)
+// Tables and waitlist data
 // =============================================================
+var maxTables = 5;
+
 var tables = [
   {
-    routeName: "table1",
-    name: "Table1",
+    "customerName": "test",
+    "phoneNumber": "1214234",
+    "customerEmail": "email@email.com",
+    "customerID": "123"
   },
   {
-    routeName: "table2",
-    name: "Table2",
-  },
-  {
-    routeName: "table3",
-    name: "Table3",
+    "customerName": "Jim Bob",
+    "phoneNumber": "512-459-2222",
+    "customerEmail": "jimbob@gmail.com",
+    "customerID": "jimbob512"
   }
 ];
+
+var waitlist = [];
 
 // Routes
 // =============================================================
 
 // Basic route that sends the user first to the AJAX Page
 app.get("/", function(req, res) {
-  res.sendFile(path.join(__dirname, "view.html"));
+  res.sendFile(path.join(__dirname, "home.html"));
 });
 
 app.get("/tables", function(req, res) {
@@ -52,25 +56,30 @@ app.get("/api/tables", function(req, res) {
 
 // Displays the waitlist
 app.get("/api/waitlist", function(req, res) {
-  return res.json(tables);
+  return res.json(waitlist);
 });
 
-// // Create New Characters - takes in JSON input
-// app.post("/api/characters", function(req, res) {
-//   // req.body hosts is equal to the JSON post sent from the user
-//   // This works because of our body parsing middleware
-//   var newcharacter = req.body;
+app.post("/api/tables", function(req, res) {
+  var newTable = req.body;
+  console.log(newTable);
 
-//   // Using a RegEx Pattern to remove spaces from newCharacter
-//   // You can read more about RegEx Patterns later https://www.regexbuddy.com/regex.html
-//   newcharacter.routeName = newcharacter.name.replace(/\s+/g, "").toLowerCase();
+  // Check if the customer ID already exists in the tables or waitlist
+  var alreadyExists = tables.find(table => table.customerID === newTable.customerID)
+    || waitlist.find(table => table.customerID === newTable.customerID);
+  
+  if(!alreadyExists) {
+    // Check if we have tables left
+    if(tables.length < maxTables) {
+      tables.push(newTable);
+    } else {
+      waitlist.push(newTable);
+    }
 
-//   console.log(newcharacter);
-
-//   characters.push(newcharacter);
-
-//   res.json(newcharacter);
-// });
+    res.send(true);
+  } else {
+    res.send(false);
+  }
+});
 
 // Starts the server to begin listening
 // =============================================================
